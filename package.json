@@ -9,6 +9,8 @@
   "author": "Dewarsh",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "joi": "^13.1.0",
+    "uuid": "^8.0.0"
   }
 }
