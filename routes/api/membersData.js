@@ -35,9 +35,38 @@ router.post('/', (req, res) => {
         members.push(newMember)
         res.json(members)
     } else {
-        res.send(error.details[0].message)
+        res.status(400).send(error.details[0].message)
     }
 })
+
+// Updating a member
+router.put('/:id', (req, res) => {
+    // checking if the member is present first
+    const foundData = members.some(member => member.id === parseInt(req.params.id))
+
+    // validate the data before update
+    if(foundData) {
+        const updMember = req.body
+        const { error } = validateMember(updMember)
+
+        // update the member with new data
+        if(!error) {
+            members.forEach(member => {
+                if(member.id === parseInt(req.params.id)) {
+                    member.name = updMember.name ? updMember.name : member.name
+                    member.email = updMember.email ? updMember.email : member.email
+                    res.json({msg: 'Member Updated', member})
+                }
+            })
+        }
+        else {
+           return res.status(400).send(error.details[0].message)
+        }
+    }
+    else {
+        return res.status(404).send(`No member with the id ${req.params.id}`)
+    }
+}) 
 
 function validateMember(member) {
     const schema = {
