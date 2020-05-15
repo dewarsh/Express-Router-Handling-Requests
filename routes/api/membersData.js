@@ -68,6 +68,40 @@ router.put('/:id', (req, res) => {
     }
 }) 
 
+// Delete a member
+router.delete('/:id', (req, res) => {
+    // checking if the member is present first
+    const foundData = members.some(member => member.id === parseInt(req.params.id))
+
+    // deleting the member from the collection
+    if(foundData) {
+        res.json({
+            msg: 'Member Deleted',
+            members: members.filter(member => member.id !== parseInt(req.params.id))
+        })
+    }
+    else {
+        res.status(404).json({msg: `No member with the id ${req.params.id}`})
+    }
+
+    // The above way is not the way of doing it as when you do GET request for all members
+    // We will have the one we requested to delete for. So, efficient way is as below
+
+    if(foundData) {
+        const member = members.find(m => m.id === parseInt(req.params.id))
+        const index = members.indexOf(member)
+        console.log(index)
+        members.splice(index, 1)
+        res.json({
+            msg: 'Member Deleted',
+            members: members
+        })
+    }
+    else {
+        res.status(404).json({msg: `No member with the id ${req.params.id}`})
+    }
+})
+
 function validateMember(member) {
     const schema = {
         name: Joi.string().min(3).required(),
